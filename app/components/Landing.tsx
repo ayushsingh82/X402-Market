@@ -1,23 +1,18 @@
 "use client";
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import CreativeMetallicEffect from './CreativeMetallicEffect';
 import MagicBento from './MagicBento';
 import SplashCursor from './SplashCursor';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
  
 
 const Landing = () => {
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  const [selectedNav, setSelectedNav] = useState<number>(0);
-
-  const navItems = ['Home', 'Developers', 'Blog'];
 
   const faqs = [
     {
-      question: "What is Aave?",
-      answer: "Aave is a DeFi infrastructure platform that provides yield bidding engines and liquidity auction mechanisms for applications."
+      question: "What is Polkadot?",
+      answer: "Polkadot is a DeFi infrastructure platform that provides yield bidding engines and liquidity auction mechanisms for applications."
     },
     {
       question: "How does the yield bidding work?",
@@ -25,7 +20,7 @@ const Landing = () => {
     },
     {
       question: "Do I need to write smart contracts?",
-      answer: "No, Aave provides pre-built DeFi-native yield, vaults, and structured products that you can embed without writing any smart contracts."
+      answer: "No, Polkadot provides pre-built DeFi-native yield, vaults, and structured products that you can embed without writing any smart contracts."
     },
     {
       question: "What APIs do you provide?",
@@ -37,34 +32,7 @@ const Landing = () => {
     setOpenFAQ(openFAQ === index ? null : index);
   };
   return (
-    <div className="min-h-screen bg-black relative">
-      {/* Navbar */}
-      <nav className="flex items-center justify-between px-16 py-4">
-        <div className="text-2xl font-bold text-white">Aave</div>
-        <div className="flex items-center space-x-2">
-          {navItems.map((item, index) => (
-            <button
-              key={item}
-              onClick={() => setSelectedNav(index)}
-              className={`px-4 py-2 rounded-lg border-2 transition-colors ${
-                selectedNav === index
-                  ? 'bg-white text-black border-black'
-                  : 'bg-black text-white border-black hover:bg-gray-800'
-              }`}
-            >
-              {item}
-            </button>
-          ))}
-          <Link
-            href="/marketplace"
-            className="px-4 py-2 rounded-lg border-2 bg-black text-white border-black hover:bg-gray-800 transition-colors"
-          >
-            Marketplace
-          </Link>
-        </div>
-        <ConnectButton />
-      </nav>
-
+    <div className="bg-black relative">
       {/* Hero Section */}
       <section className="px-8 py-16 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none z-0">
@@ -89,7 +57,7 @@ const Landing = () => {
             Features
           </h3>
           <p className="text-lg text-gray-300 mb-16 max-w-3xl mx-auto">
-            From idea to a billion users — Aave gives apps the DeFi rails to scale without limits.
+            From idea to a billion users — Polkadot gives apps the DeFi rails to scale without limits.
           </p>
 
           <MagicBento 
@@ -138,7 +106,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="bg-black text-white px-8 py-8">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="text-xl font-bold">Aave</div>
+          <div className="text-xl font-bold">Polkadot</div>
           <div className="flex items-center space-x-6">
             <a href="#" className="hover:text-gray-400 transition-colors">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">

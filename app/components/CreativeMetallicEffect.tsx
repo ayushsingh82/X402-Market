@@ -99,10 +99,10 @@ const CreativeMetallicEffect = () => {
               ))}
             </div>
             
-            {/* AAVE Text in the center */}
+            {/* Polkadot Text in the center */}
             <div className="absolute inset-0 flex items-center justify-center z-10">
               <h1 className="text-6xl font-bold text-black drop-shadow-lg">
-                AAVE
+                Polkadot
               </h1>
             </div>
           </div>

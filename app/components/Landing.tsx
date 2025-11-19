@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import CreativeMetallicEffect from './CreativeMetallicEffect';
 import MagicBento from './MagicBento';
 import SplashCursor from './SplashCursor';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
  
 
 const Landing = () => {
@@ -54,9 +55,7 @@ const Landing = () => {
             </button>
           ))}
         </div>
-        <button className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors">
-          Get Started
-        </button>
+        <ConnectButton />
       </nav>
 
       {/* Hero Section */}

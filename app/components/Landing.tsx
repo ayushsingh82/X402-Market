@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import CreativeMetallicEffect from './CreativeMetallicEffect';
 import MagicBento from './MagicBento';
 import SplashCursor from './SplashCursor';
@@ -54,6 +55,12 @@ const Landing = () => {
               {item}
             </button>
           ))}
+          <Link
+            href="/marketplace"
+            className="px-4 py-2 rounded-lg border-2 bg-black text-white border-black hover:bg-gray-800 transition-colors"
+          >
+            Marketplace
+          </Link>
         </div>
         <ConnectButton />
       </nav>

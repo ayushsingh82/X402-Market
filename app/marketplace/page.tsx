@@ -151,7 +151,7 @@ export default function Marketplace() {
               placeholder="Search agents..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-3 bg-black border-2 border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 placeholder:text-gray-500"
+              className="w-full px-4 py-3 bg-black border-2 border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-500"
             />
           </div>
           <div className="flex gap-2 flex-wrap">
@@ -161,7 +161,7 @@ export default function Marketplace() {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 border-2 rounded-lg font-bold transition-all ${
                   selectedCategory === category
-                    ? 'bg-purple-600 text-white border-purple-400 shadow-[4px_4px_0_0_rgba(147,51,234,0.5)]'
+                    ? 'bg-blue-600 text-white border-blue-400 shadow-[4px_4px_0_0_rgba(37,99,235,0.5)]'
                     : 'bg-black text-white border-gray-700 hover:bg-gray-800 hover:border-gray-600'
                 }`}
               >
@@ -179,11 +179,11 @@ export default function Marketplace() {
 
             return (
               <Link key={agent.id} href={`/agent/${agent.id}`}>
-                <div className="bg-black border-2 border-gray-700 hover:border-purple-500 shadow-[8px_8px_0_0_rgba(147,51,234,0.3)] rounded-2xl p-6 hover:shadow-[4px_4px_0_0_rgba(147,51,234,0.5)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all duration-200 cursor-pointer">
+                <div className="bg-black border-2 border-gray-700 hover:border-blue-500 shadow-[8px_8px_0_0_rgba(37,99,235,0.3)] rounded-2xl p-6 hover:shadow-[4px_4px_0_0_rgba(37,99,235,0.5)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all duration-200 cursor-pointer">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <h3 className="text-xl font-black text-white mb-2">{agent.name}</h3>
-                      <span className="inline-block bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded border border-purple-400">
+                      <span className="inline-block bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded border border-blue-400">
                         {agent.category}
                       </span>
                     </div>
@@ -200,7 +200,7 @@ export default function Marketplace() {
                       <span className="text-xs text-gray-400">({agent.totalCalls} calls)</span>
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-black text-purple-400">{priceInUSDC} USDC</div>
+                      <div className="text-lg font-black text-blue-400">{priceInUSDC} USDC</div>
                       <div className="text-xs text-gray-400">per call</div>
                     </div>
                   </div>
@@ -233,7 +233,7 @@ export default function Marketplace() {
             }
             setShowAddAgentModal(true);
           }}
-          className="bg-purple-600 border-2 border-purple-400 shadow-[6px_6px_0_0_rgba(147,51,234,0.5)] px-6 py-3 rounded-lg cursor-pointer hover:shadow-[4px_4px_0_0_rgba(147,51,234,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
+          className="bg-blue-600 border-2 border-blue-400 shadow-[6px_6px_0_0_rgba(37,99,235,0.5)] px-6 py-3 rounded-lg cursor-pointer hover:shadow-[4px_4px_0_0_rgba(37,99,235,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
         >
           <span className="text-2xl font-black text-white">+ Add Agent</span>
         </button>
@@ -245,13 +245,13 @@ export default function Marketplace() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-gray-900 border-2 border-gray-700 shadow-[12px_12px_0_0_rgba(147,51,234,0.3)] rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-black border-2 border-gray-700 shadow-[12px_12px_0_0_rgba(37,99,235,0.3)] rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-black text-white">Register New Agent</h2>
               <button
                 onClick={() => setShowAddAgentModal(false)}
-                className="bg-gray-800 border-2 border-gray-700 shadow-[4px_4px_0_0_rgba(147,51,234,0.3)] px-4 py-2 rounded-lg hover:shadow-[2px_2px_0_0_rgba(147,51,234,0.5)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 font-black text-white text-xl"
+                className="bg-black border-2 border-gray-700 shadow-[4px_4px_0_0_rgba(37,99,235,0.3)] px-4 py-2 rounded-lg hover:shadow-[2px_2px_0_0_rgba(37,99,235,0.5)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 font-black text-white text-xl"
               >
                 ✕
               </button>
@@ -277,7 +277,7 @@ export default function Marketplace() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Code Assistant Agent"
-                  className="w-full px-4 py-3 bg-black border-2 border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 placeholder:text-gray-500"
+                  className="w-full px-4 py-3 bg-black border-2 border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-500"
                 />
               </div>
 
@@ -290,7 +290,7 @@ export default function Marketplace() {
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Helps with code generation, debugging, and code reviews..."
                   rows={3}
-                  className="w-full px-4 py-3 bg-black border-2 border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 placeholder:text-gray-500"
+                  className="w-full px-4 py-3 bg-black border-2 border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-500"
                 />
               </div>
 
@@ -304,7 +304,7 @@ export default function Marketplace() {
                   value={formData.endpointUrl}
                   onChange={(e) => setFormData({ ...formData, endpointUrl: e.target.value })}
                   placeholder="https://api.example.com/mcp"
-                  className="w-full px-4 py-3 bg-black border-2 border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 placeholder:text-gray-500"
+                  className="w-full px-4 py-3 bg-black border-2 border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-500"
                 />
               </div>
 
@@ -321,7 +321,7 @@ export default function Marketplace() {
                     value={formData.pricePerCall}
                     onChange={(e) => setFormData({ ...formData, pricePerCall: e.target.value })}
                     placeholder="0.01"
-                    className="w-full px-4 py-3 bg-black border-2 border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 placeholder:text-gray-500"
+                    className="w-full px-4 py-3 bg-black border-2 border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-500"
                   />
                 </div>
                 <div>
@@ -332,7 +332,7 @@ export default function Marketplace() {
                     required
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-4 py-3 bg-black border-2 border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-4 py-3 bg-black border-2 border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="" className="text-gray-500">Select category</option>
                     {agentCategories.map((cat) => (
@@ -355,14 +355,14 @@ export default function Marketplace() {
                 <button
                   type="button"
                   onClick={() => setShowAddAgentModal(false)}
-                  className="flex-1 bg-gray-800 border-2 border-gray-700 shadow-[4px_4px_0_0_rgba(147,51,234,0.3)] px-6 py-3 rounded-lg hover:shadow-[2px_2px_0_0_rgba(147,51,234,0.5)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 font-bold text-white"
+                  className="flex-1 bg-gray-800 border-2 border-gray-700 shadow-[4px_4px_0_0_rgba(37,99,235,0.3)] px-6 py-3 rounded-lg hover:shadow-[2px_2px_0_0_rgba(37,99,235,0.5)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 font-bold text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={!isConnected || isSubmitting}
-                  className="flex-1 bg-purple-600 border-2 border-purple-400 shadow-[4px_4px_0_0_rgba(147,51,234,0.5)] px-6 py-3 rounded-lg hover:shadow-[2px_2px_0_0_rgba(147,51,234,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 font-bold text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-blue-600 border-2 border-blue-400 shadow-[4px_4px_0_0_rgba(37,99,235,0.5)] px-6 py-3 rounded-lg hover:shadow-[2px_2px_0_0_rgba(37,99,235,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 font-bold text-white disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? 'Registering...' : 'Register Agent'}
                 </button>

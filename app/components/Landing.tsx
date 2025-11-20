@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import CreativeMetallicEffect from './CreativeMetallicEffect';
 import MagicBento from './MagicBento';
 import SplashCursor from './SplashCursor';
@@ -41,7 +42,11 @@ const Landing = () => {
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="flex flex-col items-center justify-center text-center">
             <h1 className="text-5xl md:text-6xl font-semibold font-serif text-white mb-6 leading-tight">
-              Become the DeFi backbone 
+              Become the{' '}
+              <Link href="/marketplace" className="text-[#FFD1B3] hover:text-[#FFD1B3]/80 underline decoration-[#FFD1B3] decoration-2 underline-offset-4 transition-colors cursor-pointer">
+                DeFi
+              </Link>{' '}
+              backbone 
             </h1>
             <p className="text-2xl text-gray-300 leading-tight mb-10 max-w-3xl">
               Instantly embed DeFi-native yield, vaults, and structured products — without writing smart contracts.
@@ -70,7 +75,7 @@ const Landing = () => {
             clickEffect={true}
             spotlightRadius={300}
             particleCount={12}
-            glowColor="132, 0, 255"
+            glowColor="255, 209, 179"
           />
 
         </div>
@@ -82,10 +87,10 @@ const Landing = () => {
           <h2 className="text-4xl font-bold text-white text-center mb-12">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div key={index} className="border border-gray-700 hover:border-purple-400 rounded-lg transition-colors">
+              <div key={index} className="border border-gray-700 hover:border-[#FFD1B3] rounded-lg transition-colors">
                 <button
                   onClick={() => toggleFAQ(index)}
-                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-purple-800/30 transition-colors hover:border-purple-400"
+                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-[#FFD1B3]/20 transition-colors hover:border-[#FFD1B3]"
                 >
                   <h3 className="text-lg font-semibold text-white">{faq.question}</h3>
                   <span className="text-2xl font-light text-gray-400">

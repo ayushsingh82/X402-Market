@@ -136,11 +136,27 @@ export default function Marketplace() {
       {/* MAIN CONTENT */}
       <div className="relative z-10 pt-16 pb-20 px-4 max-w-7xl mx-auto">
         {/* Page Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-black text-white mb-4">Agent Marketplace</h1>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Discover and interact with AI agents (MCPs) deployed on NullShot. Pay per use with x402 micropayments.
-          </p>
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-12 gap-4">
+          <div className="flex-1">
+            <h1 className="text-5xl font-black text-white mb-4">Agent Marketplace</h1>
+            <p className="text-lg text-gray-300 max-w-2xl">
+              Discover and interact with AI agents (MCPs) deployed on NullShot. Pay per use with x402 micropayments.
+            </p>
+          </div>
+          <div>
+            <button
+              onClick={() => {
+                if (!isConnected) {
+                  alert('Please connect your wallet first');
+                  return;
+                }
+                setShowAddAgentModal(true);
+              }}
+              className="bg-white border-2 border-white text-black shadow-[6px_6px_0_0_rgba(0,0,0,0.5)] px-6 py-3 rounded-lg cursor-pointer hover:bg-gray-100 hover:shadow-[4px_4px_0_0_rgba(0,0,0,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
+            >
+              <span className="text-xl font-black text-black">+ Add Agent</span>
+            </button>
+          </div>
         </div>
 
         {/* Search and Filter */}
@@ -161,7 +177,7 @@ export default function Marketplace() {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 border-2 rounded-lg font-bold transition-all ${
                   selectedCategory === category
-                    ? 'bg-[#FFD1B3] text-black border-[#FFD1B3] shadow-[4px_4px_0_0_rgba(255,209,179,0.5)]'
+                    ? 'bg-white text-black border-white shadow-[4px_4px_0_0_rgba(0,0,0,0.5)]'
                     : 'bg-black text-white border-gray-700 hover:bg-gray-800 hover:border-gray-600'
                 }`}
               >
@@ -173,16 +189,49 @@ export default function Marketplace() {
 
         {/* Agents Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredAgents.map((agent) => {
+          {filteredAgents.map((agent, index) => {
             const priceInUSDC = (agent.pricePerCall / 100).toFixed(2);
             const rating = agent.rating > 0 ? agent.rating.toFixed(1) : '0.0';
 
+            // Different shadow colors for each card
+            const shadowColors = [
+              { rgb: '255, 239, 0', hex: '#FFEF00' },      // Yellow
+              { rgb: '255, 117, 24', hex: '#FF7518' },     // Orange
+              { rgb: '0, 255, 76', hex: '#00FF4C' },      // Green
+              { rgb: '0, 123, 255', hex: '#007BFF' },      // Blue
+              { rgb: '255, 0, 0', hex: '#FF0000' },        // Red
+              { rgb: '255, 20, 147', hex: '#FF1493' },     // Pink
+            ];
+            const shadowColor = shadowColors[index % shadowColors.length];
+
             return (
-              <div key={agent.id} className="bg-black border-2 border-gray-700 hover:border-[#FFD1B3] shadow-[8px_8px_0_0_rgba(255,209,179,0.3)] rounded-2xl p-6 hover:shadow-[4px_4px_0_0_rgba(255,209,179,0.5)] transition-all duration-200">
+              <div 
+                key={agent.id} 
+                className="bg-black border-2 border-gray-700 rounded-2xl p-6 transition-all duration-200 hover:translate-x-[4px] hover:translate-y-[4px]"
+                style={{ 
+                  boxShadow: `8px 8px 0 0 rgba(${shadowColor.rgb}, 0.3)`,
+                  borderColor: shadowColor.hex,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = `4px 4px 0 0 rgba(${shadowColor.rgb}, 0.5)`;
+                  e.currentTarget.style.borderColor = shadowColor.hex;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = `8px 8px 0 0 rgba(${shadowColor.rgb}, 0.3)`;
+                  e.currentTarget.style.borderColor = shadowColor.hex;
+                }}
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <h3 className="text-xl font-black text-white mb-2">{agent.name}</h3>
-                    <span className="inline-block bg-[#FFD1B3] text-black text-xs font-bold px-2 py-1 rounded border border-[#FFD1B3]">
+                    <span 
+                      className="inline-block text-xs font-bold px-2 py-1 rounded border"
+                      style={{
+                        backgroundColor: shadowColor.hex,
+                        borderColor: shadowColor.hex,
+                        color: shadowColor.hex === '#FFEF00' || shadowColor.hex === '#00FF4C' ? '#000000' : '#FFFFFF'
+                      }}
+                    >
                       {agent.category}
                     </span>
                   </div>
@@ -199,18 +248,34 @@ export default function Marketplace() {
                     <span className="text-xs text-gray-400">({agent.totalCalls} calls)</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-black text-[#FFD1B3]">{priceInUSDC} USDC</div>
+                    <div className="text-lg font-black" style={{ color: shadowColor.hex }}>
+                      {priceInUSDC} USDC
+                    </div>
                     <div className="text-xs text-gray-400">per call</div>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t-2 border-gray-700 mb-4">
+                <div className="pt-4 border-t-2 mb-4" style={{ borderColor: shadowColor.hex }}>
                   <div className="text-xs text-gray-500 font-mono truncate mb-4">
                     Agent ID: {agent.id}
                   </div>
                   <Link
                     href={`/agent/${agent.id}`}
-                    className="w-full bg-[#FFD1B3] border-2 border-[#FFD1B3] text-black font-bold py-3 px-4 rounded-lg hover:bg-[#FFD1B3]/80 shadow-[4px_4px_0_0_rgba(255,209,179,0.5)] hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 flex items-center justify-center"
+                    className="w-full font-bold py-3 px-4 rounded-lg hover:opacity-80 transition-all duration-200 flex items-center justify-center"
+                    style={{
+                      backgroundColor: shadowColor.hex,
+                      borderColor: shadowColor.hex,
+                      color: shadowColor.hex === '#FFEF00' || shadowColor.hex === '#00FF4C' ? '#000000' : '#FFFFFF',
+                      boxShadow: `4px 4px 0 0 rgba(${shadowColor.rgb}, 0.5)`,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow = `2px 2px 0 0 rgba(${shadowColor.rgb}, 0.7)`;
+                      e.currentTarget.style.transform = 'translate(2px, 2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = `4px 4px 0 0 rgba(${shadowColor.rgb}, 0.5)`;
+                      e.currentTarget.style.transform = 'translate(0, 0)';
+                    }}
                   >
                     Buy & Access
                   </Link>
@@ -227,21 +292,6 @@ export default function Marketplace() {
         )}
       </div>
 
-      {/* ADD AGENT BUTTON - Bottom Right */}
-      <div className="fixed bottom-6 right-6 z-10">
-        <button
-          onClick={() => {
-            if (!isConnected) {
-              alert('Please connect your wallet first');
-              return;
-            }
-            setShowAddAgentModal(true);
-          }}
-          className="bg-[#FFD1B3] border-2 border-[#FFD1B3] shadow-[6px_6px_0_0_rgba(255,209,179,0.5)] px-6 py-3 rounded-lg cursor-pointer hover:shadow-[4px_4px_0_0_rgba(255,209,179,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
-        >
-          <span className="text-2xl font-black text-black">+ Add Agent</span>
-        </button>
-      </div>
 
       {/* ADD AGENT MODAL */}
       {showAddAgentModal && (
@@ -349,7 +399,7 @@ export default function Marketplace() {
               </div>
 
               {isConnected && address && (
-                <div className="p-4 bg-gray-800 border-2 border-gray-700 rounded-lg">
+                <div className="p-4 bg-black border-2 border-gray-700 rounded-lg">
                   <p className="text-xs text-gray-400 mb-1">Owner Wallet</p>
                   <p className="text-sm font-mono text-white">{address}</p>
                 </div>
@@ -359,14 +409,14 @@ export default function Marketplace() {
                 <button
                   type="button"
                   onClick={() => setShowAddAgentModal(false)}
-                  className="flex-1 bg-gray-800 border-2 border-gray-700 shadow-[4px_4px_0_0_rgba(255,209,179,0.3)] px-6 py-3 rounded-lg hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.5)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 font-bold text-white"
+                  className="flex-1 bg-black border-2 border-gray-700 shadow-[4px_4px_0_0_rgba(255,209,179,0.3)] px-6 py-3 rounded-lg hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.5)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 font-bold text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={!isConnected || isSubmitting}
-                  className="flex-1 bg-[#FFD1B3] border-2 border-[#FFD1B3] shadow-[4px_4px_0_0_rgba(255,209,179,0.5)] px-6 py-3 rounded-lg hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 font-bold text-black disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-white border-2 border-white shadow-[4px_4px_0_0_rgba(255,255,255,0.5)] px-6 py-3 rounded-lg hover:bg-gray-100 hover:shadow-[2px_2px_0_0_rgba(255,255,255,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 font-bold text-black disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? 'Registering...' : 'Register Agent'}
                 </button>

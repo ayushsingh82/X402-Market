@@ -12,7 +12,7 @@ export default function Navbar() {
       <div className="flex items-center space-x-2">
         <Link
           href="/marketplace"
-          className="px-4 py-2 rounded-lg border-2 bg-[#FFD1B3] text-black border-[#FFD1B3] hover:bg-[#FFD1B3]/80 shadow-[4px_4px_0_0_rgba(255,209,179,0.3)] hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.5)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 font-bold"
+          className="px-4 py-2 rounded-lg border-2 bg-white text-black border-white hover:bg-gray-100 shadow-[4px_4px_0_0_rgba(0,0,0,0.3)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,0.5)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 font-bold"
         >
           Marketplace
         </Link>

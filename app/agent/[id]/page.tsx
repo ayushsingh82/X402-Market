@@ -154,7 +154,7 @@ export default function AgentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Agent Info Card */}
         <div className="bg-black border-2 border-gray-700 rounded-2xl p-6 mb-8 shadow-[8px_8px_0_0_rgba(255,209,179,0.3)]">

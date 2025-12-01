@@ -22,6 +22,7 @@ export interface BentoProps {
   glowColor?: string;
   clickEffect?: boolean;
   enableMagnetism?: boolean;
+  customCards?: BentoCardProps[];
 }
 
 const DEFAULT_PARTICLE_COUNT = 12;
@@ -29,7 +30,7 @@ const DEFAULT_SPOTLIGHT_RADIUS = 300;
 const DEFAULT_GLOW_COLOR = '132, 0, 255';
 const MOBILE_BREAKPOINT = 768;
 
-const cardData: BentoCardProps[] = [
+const defaultCardData: BentoCardProps[] = [
   {
     color: '#060010',
     title: 'Blazing Fast!',
@@ -526,11 +527,13 @@ const MagicBento: React.FC<BentoProps> = ({
   enableTilt = false,
   glowColor = DEFAULT_GLOW_COLOR,
   clickEffect = true,
-  enableMagnetism = true
+  enableMagnetism = true,
+  customCards
 }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const isMobile = useMobileDetection();
   const shouldDisableAnimations = disableAnimations || isMobile;
+  const cardData = customCards || defaultCardData;
 
   return (
     <>

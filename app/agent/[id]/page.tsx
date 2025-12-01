@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
-import { useAccount } from 'wagmi';
+import React, { useState, useEffect } from 'react';
+import { useAccount, useWalletClient } from 'wagmi';
+import { verifyPayment, processX402Payment } from '@/lib/x402';
 
 // Hardcoded agents data (same as marketplace)
 const agents = [
@@ -81,12 +82,35 @@ export default function AgentPage() {
   const agentId = parseInt(params.id as string);
   const agent = agents.find(a => a.id === agentId);
   const { address, isConnected } = useAccount();
+  const { data: walletClient } = useWalletClient();
   
   const [hasAccess, setHasAccess] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputPrompt, setInputPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingPayment, setIsCheckingPayment] = useState(true);
+
+  // Check payment on mount
+  useEffect(() => {
+    const checkPayment = () => {
+      const resourceUrl = `/api/agent/${agentId}`;
+      const paymentVerified = verifyPayment(resourceUrl);
+      
+      if (paymentVerified) {
+        setHasAccess(true);
+        // Add welcome message
+        setMessages([{
+          role: 'assistant',
+          content: `Welcome! You now have access to ${agent.name}. You can start sending prompts to interact with this MCP agent.`,
+          timestamp: new Date()
+        }]);
+      }
+      setIsCheckingPayment(false);
+    };
+
+    checkPayment();
+  }, [agentId, agent]);
 
   if (!agent) {
     return (
@@ -104,23 +128,34 @@ export default function AgentPage() {
   const priceInUSDC = (agent.pricePerCall / 100).toFixed(2);
 
   const handleBuyAccess = async () => {
-    if (!isConnected) {
+    if (!isConnected || !walletClient) {
       alert('Please connect your wallet first');
       return;
     }
 
     setIsProcessing(true);
-    // Simulate payment processing
-    setTimeout(() => {
-      setHasAccess(true);
+
+    try {
+      const resourceUrl = `/api/agent/${agentId}`;
+      const result = await processX402Payment(walletClient, resourceUrl, '0.10');
+
+      if (result.success) {
+        setHasAccess(true);
+        // Add welcome message
+        setMessages([{
+          role: 'assistant',
+          content: `Welcome! You now have access to ${agent.name}. You can start sending prompts to interact with this MCP agent.`,
+          timestamp: new Date()
+        }]);
+      } else {
+        alert(result.error || 'Payment failed. Please try again.');
+      }
+    } catch (error: any) {
+      console.error('Payment error:', error);
+      alert(error.message || 'Payment processing failed. Please try again.');
+    } finally {
       setIsProcessing(false);
-      // Add welcome message
-      setMessages([{
-        role: 'assistant',
-        content: `Welcome! You now have access to ${agent.name}. You can start sending prompts to interact with this MCP agent.`,
-        timestamp: new Date()
-      }]);
-    }, 2000);
+    }
   };
 
   const handleSendPrompt = async () => {

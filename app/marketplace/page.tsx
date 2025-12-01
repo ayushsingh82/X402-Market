@@ -1,14 +1,17 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import React from 'react';
 
 import { motion } from 'framer-motion';
 
-import { useAccount } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+
+import { processX402Payment } from '@/lib/x402';
 
 // Agent type
 interface Agent {
@@ -81,10 +84,13 @@ const hardcodedAgents: Agent[] = [
 
 export default function Marketplace() {
   const { address, isConnected } = useAccount();
+  const { data: walletClient } = useWalletClient();
+  const router = useRouter();
   const [showAddAgentModal, setShowAddAgentModal] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedCategory, setSelectedCategory] = React.useState('All');
+  const [processingPayment, setProcessingPayment] = React.useState<number | null>(null);
 
   const agentCategories = ['Development', 'Analytics', 'Content', 'Research', 'Media', 'Language', 'AI Tools', 'Trading'];
 
@@ -129,6 +135,32 @@ export default function Marketplace() {
       });
       setIsSubmitting(false);
     }, 1000);
+  };
+
+  const handlePayment = async (agentId: number) => {
+    if (!isConnected || !walletClient) {
+      alert('Please connect your wallet first');
+      return;
+    }
+
+    setProcessingPayment(agentId);
+
+    try {
+      const resourceUrl = `/api/agent/${agentId}`;
+      const result = await processX402Payment(walletClient, resourceUrl, '0.10');
+
+      if (result.success) {
+        // Payment successful, redirect to agent page
+        router.push(`/agent/${agentId}`);
+      } else {
+        alert(result.error || 'Payment failed. Please try again.');
+        setProcessingPayment(null);
+      }
+    } catch (error: any) {
+      console.error('Payment error:', error);
+      alert(error.message || 'Payment processing failed. Please try again.');
+      setProcessingPayment(null);
+    }
   };
 
   return (
@@ -231,12 +263,13 @@ export default function Marketplace() {
                   <div className="text-xs text-gray-500 font-mono truncate mb-4">
                     Agent ID: {agent.id}
                   </div>
-                  <Link
-                    href={`/agent/${agent.id}`}
-                    className="w-full font-bold py-3 px-4 rounded-lg hover:opacity-80 transition-all duration-200 flex items-center justify-center bg-[#FFD1B3] border-2 border-[#FFD1B3] text-black shadow-[4px_4px_0_0_rgba(255,209,179,0.5)] hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.7)] hover:translate-x-[2px] hover:translate-y-[2px]"
+                  <button
+                    onClick={() => handlePayment(agent.id)}
+                    disabled={processingPayment === agent.id || !isConnected}
+                    className="w-full font-bold py-3 px-4 rounded-lg hover:opacity-80 transition-all duration-200 flex items-center justify-center bg-[#FFD1B3] border-2 border-[#FFD1B3] text-black shadow-[4px_4px_0_0_rgba(255,209,179,0.5)] hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Buy & Access
-                  </Link>
+                    {processingPayment === agent.id ? 'Processing Payment...' : 'Pay 0.10'}
+                  </button>
                 </div>
               </div>
             );

@@ -8,9 +8,10 @@ const PRICE = '0.10';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const agentId = params.id;
+  const { id } = await params;
+  const agentId = id;
   const paymentHeader = request.headers.get('X-PAYMENT');
 
   // If no payment header, return 402 Payment Required

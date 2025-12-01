@@ -1,5 +1,4 @@
 import { type Address, type Hash, encodeAbiParameters, parseUnits, keccak256, toHex, type WalletClient } from 'viem';
-import { type BaseSepolia } from 'wagmi/chains';
 
 // x402 Configuration
 const PAYMENT_RECEIVING_ADDRESS = '0xb822b51a88e8a03fce0220b15cb2c662e42adec1' as Address;
@@ -173,15 +172,24 @@ export async function processX402Payment(
     const to = PAYMENT_RECEIVING_ADDRESS;
     const value = parseUnits(amount, 6); // USDC has 6 decimals
 
-    // Step 1: Request payment details
-    const paymentDetails = await requestPaymentDetails(resourceUrl);
+    // Step 1: Check if payment already exists for this wallet
+    const existingPayment = verifyPayment(resourceUrl, from);
+    if (existingPayment) {
+      // Payment already exists, no need to pay again
+      return { success: true, paymentProof: 'existing' };
+    }
+
+    // Step 2: Request payment details
+    // Use absolute URL for API routes
+    const apiUrl = resourceUrl.startsWith('http') ? resourceUrl : `${window.location.origin}${resourceUrl}`;
+    const paymentDetails = await requestPaymentDetails(apiUrl);
 
     if (!paymentDetails) {
       // Resource is already accessible
       return { success: true };
     }
 
-    // Step 2: Sign transfer authorization
+    // Step 3: Sign transfer authorization
     const validAfter = BigInt(0);
     const validBefore = BigInt(Math.floor(Date.now() / 1000) + 3600); // 1 hour validity
 
@@ -194,7 +202,7 @@ export async function processX402Payment(
       validBefore
     );
 
-    // Step 3: Create X-PAYMENT header
+    // Step 4: Create X-PAYMENT header
     const paymentHeader = createPaymentHeader(
       from,
       to,
@@ -205,8 +213,8 @@ export async function processX402Payment(
       validBefore
     );
 
-    // Step 4: Retry request with X-PAYMENT header
-    const response = await fetch(resourceUrl, {
+    // Step 5: Retry request with X-PAYMENT header
+    const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -215,7 +223,7 @@ export async function processX402Payment(
     });
 
     if (response.ok) {
-      // Payment successful, store proof
+      // Payment successful, store proof with wallet address
       const paymentProof = JSON.stringify({
         resource: resourceUrl,
         from,
@@ -224,10 +232,11 @@ export async function processX402Payment(
         signature,
         nonce,
         timestamp: Date.now(),
+        walletAddress: from.toLowerCase(), // Store wallet address for verification
       });
 
-      // Store in localStorage for verification
-      const paymentKey = `x402_payment_${resourceUrl}`;
+      // Store in localStorage for verification - key includes wallet address
+      const paymentKey = `x402_payment_${resourceUrl}_${from.toLowerCase()}`;
       localStorage.setItem(paymentKey, paymentProof);
 
       return { success: true, paymentProof };
@@ -248,10 +257,42 @@ export async function processX402Payment(
 }
 
 /**
- * Verifies if payment was made for a resource
+ * Verifies if payment was made for a resource by a specific wallet
  */
-export function verifyPayment(resourceUrl: string): boolean {
-  const paymentKey = `x402_payment_${resourceUrl}`;
+export function verifyPayment(resourceUrl: string, walletAddress?: string): boolean {
+  if (!walletAddress) {
+    // If no wallet address provided, check if any payment exists (backward compatibility)
+    // Try to find any payment for this resource
+    const keys = Object.keys(localStorage);
+    const matchingKey = keys.find(key => key.startsWith(`x402_payment_${resourceUrl}_`));
+    
+    if (!matchingKey) {
+      return false;
+    }
+    
+    const paymentProof = localStorage.getItem(matchingKey);
+    if (!paymentProof) {
+      return false;
+    }
+
+    try {
+      const proof = JSON.parse(paymentProof);
+      const oneHour = 60 * 60 * 1000;
+      const isExpired = Date.now() - proof.timestamp > oneHour;
+
+      if (isExpired) {
+        localStorage.removeItem(matchingKey);
+        return false;
+      }
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  // Check payment for specific wallet address
+  const paymentKey = `x402_payment_${resourceUrl}_${walletAddress.toLowerCase()}`;
   const paymentProof = localStorage.getItem(paymentKey);
 
   if (!paymentProof) {
@@ -268,6 +309,11 @@ export function verifyPayment(resourceUrl: string): boolean {
       return false;
     }
 
+    // Verify wallet address matches
+    if (proof.walletAddress?.toLowerCase() !== walletAddress.toLowerCase()) {
+      return false;
+    }
+
     return true;
   } catch {
     return false;
@@ -275,10 +321,20 @@ export function verifyPayment(resourceUrl: string): boolean {
 }
 
 /**
- * Clears payment proof for a resource
+ * Clears payment proof for a resource (optionally for a specific wallet)
  */
-export function clearPayment(resourceUrl: string): void {
-  const paymentKey = `x402_payment_${resourceUrl}`;
-  localStorage.removeItem(paymentKey);
+export function clearPayment(resourceUrl: string, walletAddress?: string): void {
+  if (walletAddress) {
+    const paymentKey = `x402_payment_${resourceUrl}_${walletAddress.toLowerCase()}`;
+    localStorage.removeItem(paymentKey);
+  } else {
+    // Clear all payments for this resource
+    const keys = Object.keys(localStorage);
+    keys.forEach(key => {
+      if (key.startsWith(`x402_payment_${resourceUrl}_`)) {
+        localStorage.removeItem(key);
+      }
+    });
+  }
 }
 

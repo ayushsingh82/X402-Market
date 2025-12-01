@@ -93,9 +93,12 @@ export default function AgentPage() {
 
   // Check payment on mount
   useEffect(() => {
+    if (!agent) return;
+    
     const checkPayment = () => {
       const resourceUrl = `/api/agent/${agentId}`;
-      const paymentVerified = verifyPayment(resourceUrl);
+      // Verify payment for the connected wallet address
+      const paymentVerified = address ? verifyPayment(resourceUrl, address) : false;
       
       if (paymentVerified) {
         setHasAccess(true);
@@ -110,7 +113,7 @@ export default function AgentPage() {
     };
 
     checkPayment();
-  }, [agentId, agent]);
+  }, [agentId, agent, address]);
 
   if (!agent) {
     return (
@@ -213,24 +216,37 @@ export default function AgentPage() {
         </div>
 
         {/* Access Section */}
-        {!hasAccess ? (
+        {isCheckingPayment ? (
           <div className="bg-black border-2 border-gray-700 rounded-2xl p-8 text-center shadow-[8px_8px_0_0_rgba(255,209,179,0.3)]">
-            <h2 className="text-2xl font-bold text-white mb-4">Purchase Access</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">Verifying Payment...</h2>
+            <p className="text-gray-300">Please wait while we verify your payment.</p>
+          </div>
+        ) : !hasAccess ? (
+          <div className="bg-black border-2 border-gray-700 rounded-2xl p-8 text-center shadow-[8px_8px_0_0_rgba(255,209,179,0.3)]">
+            <h2 className="text-2xl font-bold text-white mb-4">Payment Required</h2>
             <p className="text-gray-300 mb-6">
               {!isConnected 
-                ? 'Please connect your wallet using the button in the navbar to purchase access and interact with this MCP agent via the DKG Edge Node.'
-                : 'Purchase access to interact with this MCP agent via the DKG Edge Node.'
+                ? 'Please connect your wallet and pay 0.10 USDC to access this agent. You can make the payment from the marketplace page.'
+                : 'Please pay 0.10 USDC to access this agent. You can make the payment from the marketplace page or click below to pay now.'
               }
             </p>
-            {isConnected && (
-              <button
-                onClick={handleBuyAccess}
-                disabled={isProcessing}
-                className="bg-[#FFD1B3] border-2 border-[#FFD1B3] text-black font-bold py-3 px-8 rounded-lg hover:bg-[#FFD1B3]/80 shadow-[4px_4px_0_0_rgba(255,209,179,0.5)] hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            <div className="flex gap-4 justify-center">
+              <Link
+                href="/marketplace"
+                className="bg-[#FFD1B3] border-2 border-[#FFD1B3] text-black font-bold py-3 px-8 rounded-lg hover:bg-[#FFD1B3]/80 shadow-[4px_4px_0_0_rgba(255,209,179,0.5)] hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
               >
-                {isProcessing ? 'Processing Payment...' : `Buy Access - ${priceInUSDC} USDC`}
-              </button>
-            )}
+                Go to Marketplace
+              </Link>
+              {isConnected && (
+                <button
+                  onClick={handleBuyAccess}
+                  disabled={isProcessing}
+                  className="bg-[#FFD1B3] border-2 border-[#FFD1B3] text-black font-bold py-3 px-8 rounded-lg hover:bg-[#FFD1B3]/80 shadow-[4px_4px_0_0_rgba(255,209,179,0.5)] hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isProcessing ? 'Processing Payment...' : `Pay ${priceInUSDC} USDC`}
+                </button>
+              )}
+            </div>
           </div>
         ) : (
           /* MCP Prompt Interface */

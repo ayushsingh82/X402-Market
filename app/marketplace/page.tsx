@@ -11,7 +11,7 @@ import { useAccount, useWalletClient } from 'wagmi';
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
-import { processX402Payment } from '@/lib/x402';
+import { processX402Payment, verifyPayment } from '@/lib/x402';
 
 // Agent type
 interface Agent {
@@ -263,13 +263,32 @@ export default function Marketplace() {
                   <div className="text-xs text-gray-500 font-mono truncate mb-4">
                     Agent ID: {agent.id}
                   </div>
-                  <button
-                    onClick={() => handlePayment(agent.id)}
-                    disabled={processingPayment === agent.id || !isConnected}
-                    className="w-full font-bold py-3 px-4 rounded-lg hover:opacity-80 transition-all duration-200 flex items-center justify-center bg-[#FFD1B3] border-2 border-[#FFD1B3] text-black shadow-[4px_4px_0_0_rgba(255,209,179,0.5)] hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {processingPayment === agent.id ? 'Processing Payment...' : 'Pay 0.10'}
-                  </button>
+                  {(() => {
+                    const resourceUrl = `/api/agent/${agent.id}`;
+                    const hasPaid = address ? verifyPayment(resourceUrl, address) : false;
+                    const isProcessing = processingPayment === agent.id;
+                    
+                    if (hasPaid) {
+                      return (
+                        <Link
+                          href={`/agent/${agent.id}`}
+                          className="w-full font-bold py-3 px-4 rounded-lg hover:opacity-80 transition-all duration-200 flex items-center justify-center bg-[#FFD1B3] border-2 border-[#FFD1B3] text-black shadow-[4px_4px_0_0_rgba(255,209,179,0.5)] hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.7)] hover:translate-x-[2px] hover:translate-y-[2px]"
+                        >
+                          Access Agent
+                        </Link>
+                      );
+                    }
+                    
+                    return (
+                      <button
+                        onClick={() => handlePayment(agent.id)}
+                        disabled={isProcessing || !isConnected}
+                        className="w-full font-bold py-3 px-4 rounded-lg hover:opacity-80 transition-all duration-200 flex items-center justify-center bg-[#FFD1B3] border-2 border-[#FFD1B3] text-black shadow-[4px_4px_0_0_rgba(255,209,179,0.5)] hover:shadow-[2px_2px_0_0_rgba(255,209,179,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isProcessing ? 'Processing Payment...' : 'Pay 0.10'}
+                      </button>
+                    );
+                  })()}
                 </div>
               </div>
             );

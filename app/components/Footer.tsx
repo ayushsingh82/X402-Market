@@ -2,7 +2,7 @@ export default function Footer() {
   return (
     <footer className="bg-black text-white px-8 py-8">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
-        <div className="text-xl font-bold">Polkadot</div>
+        <div className="text-xl font-bold">X402-Market</div>
         <div className="flex items-center space-x-6">
           <a href="#" className="hover:text-gray-400 transition-colors">
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -19,4 +19,5 @@ export default function Footer() {
     </footer>
   );
 }
+
 

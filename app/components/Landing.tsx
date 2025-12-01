@@ -12,8 +12,8 @@ const Landing = () => {
 
   const faqs = [
     {
-      question: "What is Polkadot?",
-      answer: "Polkadot is a DeFi infrastructure platform that provides yield bidding engines and liquidity auction mechanisms for applications."
+      question: "What is X402-Market?",
+      answer: "X402-Market is a DeFi infrastructure platform that provides yield bidding engines and liquidity auction mechanisms for applications."
     },
     {
       question: "How does the yield bidding work?",
@@ -21,7 +21,7 @@ const Landing = () => {
     },
     {
       question: "Do I need to write smart contracts?",
-      answer: "No, Polkadot provides pre-built DeFi-native yield, vaults, and structured products that you can embed without writing any smart contracts."
+      answer: "No, X402-Market provides pre-built DeFi-native yield, vaults, and structured products that you can embed without writing any smart contracts."
     },
     {
       question: "What APIs do you provide?",
@@ -62,7 +62,7 @@ const Landing = () => {
             Features
           </h3>
           <p className="text-lg text-gray-300 mb-16 max-w-3xl mx-auto">
-            From idea to a billion users — Polkadot gives apps the DeFi rails to scale without limits.
+            From idea to a billion users — X402-Market gives apps the DeFi rails to scale without limits.
           </p>
 
           <MagicBento 

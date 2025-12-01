@@ -7,7 +7,7 @@ export default function Navbar() {
   return (
     <nav className="flex items-center justify-between px-16 py-4">
       <Link href="/" className="text-2xl font-bold text-white hover:text-gray-300 transition-colors">
-        Polkadot
+        X402-Market
       </Link>
       <div className="flex items-center space-x-2">
         <Link
